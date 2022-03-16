@@ -1,6 +1,6 @@
-# springboot-kafka-producer-consumer
-SpringBoot project with kafka producer and consumer
-It can be tested by swagger
+Simple SpringBoot Kafka Producer and Consumer demonstrator
+===========================================================
 
-# TODO
-Put topic name and group id in parameters
+You can launch message production by swagger :
+
+    http://localhost:8080/swagger-ui/index.html
