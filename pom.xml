@@ -18,6 +18,8 @@
 		<springdoc.version>1.6.4</springdoc.version>
 		<swagger2.version>3.0.0</swagger2.version>
 		<logstash-logback-encoder.version>7.0.1</logstash-logback-encoder.version>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
 	</properties>
 	<dependencies>
 		<dependency>
