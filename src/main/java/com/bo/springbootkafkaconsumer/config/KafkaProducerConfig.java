@@ -7,7 +7,6 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
@@ -28,8 +27,11 @@ public class KafkaProducerConfig {
     @Value(value = "${spring.kafka.properties.password_generic}")
     private String password;
 
-    @Value(value = "${spring.kafka.properties.truststore_and_keystore_location}")
+    @Value(value = "${spring.kafka.properties.truststore_location}")
     private String jksPath;
+
+    @Value(value = "${spring.kafka.properties.keystore_location}")
+    private String keystorePath;
 
     @Bean
     public ProducerFactory<String, MyModel> myProducerFactory() {
@@ -39,10 +41,14 @@ public class KafkaProducerConfig {
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class.getName());
 
 
-        configProps.put("security.protocol","SSL");
+        configProps.put("security.protocol", "SSL");
         configProps.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, jksPath);
         configProps.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, "PKCS12");
         configProps.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, password);
+        configProps.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, keystorePath);
+        configProps.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, password);
+
+        configProps.put(SslConfigs.SSL_ENABLED_PROTOCOLS_CONFIG, SslConfigs.DEFAULT_SSL_ENABLED_PROTOCOLS);
 
 
 //        if (protocol.equalsIgnoreCase("SSL")) {
