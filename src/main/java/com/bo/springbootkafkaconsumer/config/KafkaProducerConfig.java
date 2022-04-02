@@ -18,20 +18,29 @@ import java.util.Map;
 @Configuration
 public class KafkaProducerConfig {
 
-    @Value("${kafka.bootstrap-servers}")
+    @Value("${spring.kafka.producer.bootstrap-servers}")
     private String bootstrapServers;
 
-    @Value(value = "${spring.kafka.properties.security_protocol}")
+    @Value(value = "${spring.kafka.producer.properties.security.protocol}")
     private String protocol;
 
-    @Value(value = "${spring.kafka.properties.password_generic}")
-    private String password;
+    @Value(value = "${spring.kafka.producer.properties.ssl.truststore.location}")
+    private String truststoreLocation;
 
-    @Value(value = "${spring.kafka.properties.truststore_location}")
-    private String jksPath;
+    @Value(value = "${spring.kafka.producer.properties.ssl.truststore.password}")
+    private String truststorePassword;
 
-    @Value(value = "${spring.kafka.properties.keystore_location}")
-    private String keystorePath;
+    @Value(value = "${spring.kafka.producer.properties.ssl.truststore.type}")
+    private String truststoreType;
+
+    @Value(value = "${spring.kafka.producer.properties.ssl.keystore.location}")
+    private String keystoreLocation;
+
+    @Value(value = "${spring.kafka.producer.properties.ssl.keystore.password}")
+    private String keystorePassword;
+
+    @Value(value = "${spring.kafka.producer.properties.ssl.keystore.type}")
+    private String keystoreType;
 
     @Bean
     public ProducerFactory<String, MyModel> myProducerFactory() {
@@ -40,25 +49,14 @@ public class KafkaProducerConfig {
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class.getName());
 
-
-        configProps.put("security.protocol", "SSL");
-        configProps.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, jksPath);
-        configProps.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, "PKCS12");
-        configProps.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, password);
-        configProps.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, keystorePath);
-        configProps.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, password);
-
+        configProps.put("security.protocol", protocol);
+        configProps.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, truststoreLocation);
+        configProps.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, truststoreType);
+        configProps.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, truststorePassword);
+        configProps.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, keystoreLocation);
+        configProps.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, keystorePassword);
+        configProps.put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, keystoreType);
         configProps.put(SslConfigs.SSL_ENABLED_PROTOCOLS_CONFIG, SslConfigs.DEFAULT_SSL_ENABLED_PROTOCOLS);
-
-
-//        if (protocol.equalsIgnoreCase("SSL")) {
-//            configProps.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, jksPath);
-////            configProps.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, password);
-//            configProps.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, jksPath);
-////            configProps.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, password);
-////            configProps.put(SslConfigs.SSL_KEY_PASSWORD_CONFIG, password);
-//            configProps.put(SslConfigs.SSL_ENABLED_PROTOCOLS_CONFIG, SslConfigs.DEFAULT_SSL_ENABLED_PROTOCOLS);
-//        }
 
         return new DefaultKafkaProducerFactory<>(configProps);
     }
