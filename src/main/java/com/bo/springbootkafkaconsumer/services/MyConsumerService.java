@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MyConsumerService {
 
-    @KafkaListener(topics = "socle-kafka-topic", groupId = "socle-group")
+    @KafkaListener(topics = "${kafka.topic}", groupId = "${kafka.consumer.group}")
     public void listen(MyModel myModel) {
         log.info("Received  : " + myModel);
     }
