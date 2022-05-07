@@ -19,7 +19,11 @@ public class MyProducerService {
 
     public void send(MyModel myModel) {
         log.info("Sending my model Json Serializer : {}", myModel);
-        kafkaTemplate.send(kafkaTopic, myModel);
+
+        for (int i = 0; i < 1000; i++) {
+            myModel.setModelId(i);
+            kafkaTemplate.send(kafkaTopic, myModel);
+        }
     }
 
 }
