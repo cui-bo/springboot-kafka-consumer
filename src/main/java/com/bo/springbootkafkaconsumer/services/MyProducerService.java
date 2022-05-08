@@ -17,10 +17,10 @@ public class MyProducerService {
     @Value("${kafka.topic}")
     private String kafkaTopic;
 
-    public void send(MyModel myModel) {
+    public void send(MyModel myModel, Integer nbr) {
         log.info("Sending my model Json Serializer : {}", myModel);
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < nbr; i++) {
             myModel.setModelId(i);
             kafkaTemplate.send(kafkaTopic, myModel);
         }
