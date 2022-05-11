@@ -22,6 +22,7 @@ public class MyProducerService {
 
         for (int i = 0; i < nbr; i++) {
             myModel.setModelId(i);
+            myModel.setModelName("modelName"+i);
             kafkaTemplate.send(kafkaTopic, myModel);
         }
     }
