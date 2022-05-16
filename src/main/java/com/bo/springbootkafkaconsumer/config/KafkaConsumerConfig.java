@@ -7,18 +7,22 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 @EnableKafka
 @Configuration
 public class KafkaConsumerConfig {
+
+    private static final String CLASSPATH_PREFIX = "classpath:";
 
     @Value("${spring.kafka.producer.bootstrap-servers}")
     private String bootstrapServers;
@@ -48,13 +52,17 @@ public class KafkaConsumerConfig {
     private String autoOffsetResetConfig;
 
     @Bean
-    public ConsumerFactory<String, MyModel> consumerFactory() {
+    public ConsumerFactory<String, MyModel> consumerFactory() throws IOException {
+
+        String trustLocation = new ClassPathResource(truststoreLocation.substring(CLASSPATH_PREFIX.length())).getFile().getAbsolutePath();
+        String keyLocation = new ClassPathResource(keystoreLocation.substring(CLASSPATH_PREFIX.length())).getFile().getAbsolutePath();
+
         Map<String, Object> props = new HashMap<>();
         props.put("security.protocol", protocol);
-        props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, truststoreLocation);
+        props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, trustLocation);
         props.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, truststoreType);
         props.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, truststorePassword);
-        props.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, keystoreLocation);
+        props.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, keyLocation);
         props.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, keystorePassword);
         props.put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, keystoreType);
         props.put(SslConfigs.SSL_ENABLED_PROTOCOLS_CONFIG, SslConfigs.DEFAULT_SSL_ENABLED_PROTOCOLS);
@@ -65,7 +73,7 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, MyModel> kafkaListenerContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, MyModel> kafkaListenerContainerFactory() throws IOException {
         ConcurrentKafkaListenerContainerFactory<String, MyModel>
                 factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
