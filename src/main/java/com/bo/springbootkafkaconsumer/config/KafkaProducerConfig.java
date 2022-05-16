@@ -7,7 +7,6 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
@@ -19,8 +18,6 @@ import java.util.Map;
 
 @Configuration
 public class KafkaProducerConfig {
-
-    private static final String CLASSPATH_PREFIX = "classpath:";
 
     @Value("${spring.kafka.producer.bootstrap-servers}")
     private String bootstrapServers;
@@ -49,19 +46,16 @@ public class KafkaProducerConfig {
     @Bean
     public ProducerFactory<String, MyModel> myProducerFactory() throws IOException {
 
-        String trustLocation = new ClassPathResource(truststoreLocation.substring(CLASSPATH_PREFIX.length())).getFile().getAbsolutePath();
-        String keyLocation = new ClassPathResource(keystoreLocation.substring(CLASSPATH_PREFIX.length())).getFile().getAbsolutePath();
-
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class.getName());
 
         configProps.put("security.protocol", protocol);
-        configProps.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, trustLocation);
+        configProps.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, truststoreLocation);
         configProps.put(SslConfigs.SSL_TRUSTSTORE_TYPE_CONFIG, truststoreType);
         configProps.put(SslConfigs.SSL_TRUSTSTORE_PASSWORD_CONFIG, truststorePassword);
-        configProps.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, keyLocation);
+        configProps.put(SslConfigs.SSL_KEYSTORE_LOCATION_CONFIG, keystoreLocation);
         configProps.put(SslConfigs.SSL_KEYSTORE_PASSWORD_CONFIG, keystorePassword);
         configProps.put(SslConfigs.SSL_KEYSTORE_TYPE_CONFIG, keystoreType);
         configProps.put(SslConfigs.SSL_ENABLED_PROTOCOLS_CONFIG, SslConfigs.DEFAULT_SSL_ENABLED_PROTOCOLS);
