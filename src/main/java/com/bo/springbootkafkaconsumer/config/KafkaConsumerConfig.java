@@ -49,7 +49,7 @@ public class KafkaConsumerConfig {
     private String autoOffsetResetConfig;
 
     @Bean
-    public ConsumerFactory<String, MyModel> consumerFactory() throws IOException {
+    public ConsumerFactory<String, MyModel> consumerFactory() {
         Map<String, Object> props = new HashMap<>();
         props.put("security.protocol", protocol);
         props.put(SslConfigs.SSL_TRUSTSTORE_LOCATION_CONFIG, truststoreLocation);
@@ -66,7 +66,7 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, MyModel> kafkaListenerContainerFactory() throws IOException {
+    public ConcurrentKafkaListenerContainerFactory<String, MyModel> kafkaListenerContainerFactory(){
         ConcurrentKafkaListenerContainerFactory<String, MyModel>
                 factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());

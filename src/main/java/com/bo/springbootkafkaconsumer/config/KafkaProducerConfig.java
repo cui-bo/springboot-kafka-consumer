@@ -44,7 +44,7 @@ public class KafkaProducerConfig {
     private String keystoreType;
 
     @Bean
-    public ProducerFactory<String, MyModel> myProducerFactory() throws IOException {
+    public ProducerFactory<String, MyModel> myProducerFactory() {
 
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -64,7 +64,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, MyModel> userKafkaTemplate() throws IOException {
+    public KafkaTemplate<String, MyModel> userKafkaTemplate(){
         return new KafkaTemplate<>(myProducerFactory());
     }
 }
